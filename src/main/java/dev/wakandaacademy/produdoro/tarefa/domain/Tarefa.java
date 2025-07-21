@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -60,4 +61,15 @@ public class Tarefa {
 		pertenceAoUsuario(usuario);
 		this.status = StatusTarefa.CONCLUIDA;
     }
+
+	public void setDescricao(UUID idUsuario, String novaDescricao) {
+		validaUsuario(idUsuario);
+		this.descricao = novaDescricao;
+	}
+
+	private void validaUsuario(UUID idUsuario) {
+		if (!this.idUsuario.equals(idUsuario)) {
+			throw APIException.build(HttpStatus.UNAUTHORIZED, "credencial de autenticação não é valida");
+		}
+	}
 }

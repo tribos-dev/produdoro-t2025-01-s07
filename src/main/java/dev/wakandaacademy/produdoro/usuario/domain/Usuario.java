@@ -37,9 +37,21 @@ public class Usuario {
         this.configuracao = new ConfiguracaoUsuario(configuracaoPadrao);
     }
 
+    public void mudaStatusParaFoco(UUID idUsuario) {
+        validaUsuario(idUsuario);
+        verificaStatus(StatusUsuario.FOCO);
+        this.status = StatusUsuario.FOCO;
+    }
+
+    private void verificaStatus(StatusUsuario statusUsuario) {
+        if(this.status.equals(statusUsuario)){
+            throw APIException.build(HttpStatus.CONFLICT, "Usuário já está em FOCO");
+        }
+    }
+
     public void validaUsuario(UUID idUsuario) {
         if (!this.idUsuario.equals(idUsuario)) {
-            throw APIException.build(HttpStatus.UNAUTHORIZED, "Credencial de autenticação não é válida!");
+            throw APIException.build(HttpStatus.UNAUTHORIZED, "credencial de autenticação não é valida");
         }
     }
 }

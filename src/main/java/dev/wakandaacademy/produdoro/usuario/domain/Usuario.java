@@ -44,7 +44,7 @@ public class Usuario {
     }
 
     private void verificaStatus(StatusUsuario statusUsuario) {
-        if(this.status.equals(statusUsuario)){
+        if (this.status.equals(statusUsuario)) {
             throw APIException.build(HttpStatus.CONFLICT, "Usuário já está em FOCO");
         }
     }
@@ -52,6 +52,17 @@ public class Usuario {
     public void validaUsuario(UUID idUsuario) {
         if (!this.idUsuario.equals(idUsuario)) {
             throw APIException.build(HttpStatus.UNAUTHORIZED, "credencial de autenticação não é valida");
+        }
+    }
+
+    public void mudaStatusParaPausaCurta() {
+        verificaStatusPausaCurta();
+        this.status = StatusUsuario.PAUSA_CURTA;
+    }
+
+    private void verificaStatusPausaCurta() {
+        if (this.idUsuario.equals(StatusUsuario.PAUSA_CURTA)) {
+            throw APIException.build(HttpStatus.CONFLICT, "Usuário já está em PAUSA CURTA");
         }
     }
 }

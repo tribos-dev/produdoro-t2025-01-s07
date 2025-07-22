@@ -72,6 +72,7 @@ class TarefaApplicationServiceTest {
         return request;
     }
 
+
     @Test
     void deveConcluirTarefa() {
         Usuario usuario = DataHelper.createUsuario();

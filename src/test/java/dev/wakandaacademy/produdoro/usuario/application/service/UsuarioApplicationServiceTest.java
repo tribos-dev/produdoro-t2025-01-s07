@@ -1,6 +1,7 @@
 package dev.wakandaacademy.produdoro.usuario.application.service;
 
 import dev.wakandaacademy.produdoro.DataHelper;
+import dev.wakandaacademy.produdoro.handler.APIException;
 import dev.wakandaacademy.produdoro.usuario.application.repository.UsuarioRepository;
 import dev.wakandaacademy.produdoro.usuario.domain.StatusUsuario;
 import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 
 import java.util.UUID;
 
@@ -45,6 +47,34 @@ class UsuarioApplicationServiceTest {
         assertEquals(StatusUsuario.PAUSA_LONGA, usuario.getStatus());
     }
 
+    @Test
+    void mudarStatusParaPausaLonga_DeveLancarExcecaoUsuarioJaEstaEmPausaLonga(){
+        Usuario usuario = DataHelper.createUsuario();
+        UUID idUsuario = usuario.getIdUsuario();
+        when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
+        when(usuarioRepository.buscaUsuarioPorId(any())).thenReturn(usuario);
 
+        APIException exception = assertThrows(APIException.class,
+                () -> usuarioApplicationService.mudaStatusParaPausaLonga("usuario@teste.com", idUsuario));
+
+        assertEquals("Usuário já está em pausa longa", exception.getMessage());
+        assertEquals(HttpStatus.CONFLICT, exception.getStatusException());
+        verify(usuarioRepository, times(1)).buscaUsuarioPorEmail("usuario@teste.com");
+    }
+
+    @Test
+    void mudarStatusParaPausaLonga_DeveLancarExcecaoUsuarioNaoEntrado(){
+        Usuario usuario = DataHelper.createUsuario();
+        UUID idUsuario = usuario.getIdUsuario();
+        when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
+        when(usuarioRepository.buscaUsuarioPorId(any())).thenReturn(usuario);
+
+        APIException exception = assertThrows(APIException.class,
+                () -> usuarioApplicationService.mudaStatusParaPausaLonga("usuario@teste.com", idUsuario));
+
+        assertEquals("Usuário já está em pausa longa", exception.getMessage());
+        assertEquals(HttpStatus.CONFLICT, exception.getStatusException());
+        verify(usuarioRepository, times(1)).buscaUsuarioPorEmail("usuario@teste.com");
+    }
 
 }

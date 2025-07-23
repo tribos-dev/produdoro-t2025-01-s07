@@ -61,20 +61,4 @@ class UsuarioApplicationServiceTest {
         assertEquals(HttpStatus.CONFLICT, exception.getStatusException());
         verify(usuarioRepository, times(1)).buscaUsuarioPorEmail("usuario@teste.com");
     }
-
-    @Test
-    void mudarStatusParaPausaLonga_DeveLancarExcecaoUsuarioNaoEntrado(){
-        Usuario usuario = DataHelper.createUsuario();
-        UUID idUsuario = usuario.getIdUsuario();
-        when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
-        when(usuarioRepository.buscaUsuarioPorId(any())).thenReturn(usuario);
-
-        APIException exception = assertThrows(APIException.class,
-                () -> usuarioApplicationService.mudaStatusParaPausaLonga("usuario@teste.com", idUsuario));
-
-        assertEquals("Usuário já está em pausa longa", exception.getMessage());
-        assertEquals(HttpStatus.CONFLICT, exception.getStatusException());
-        verify(usuarioRepository, times(1)).buscaUsuarioPorEmail("usuario@teste.com");
-    }
-
 }

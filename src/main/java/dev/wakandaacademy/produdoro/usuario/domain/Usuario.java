@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import javax.validation.constraints.Email;
 import java.util.UUID;
 
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter

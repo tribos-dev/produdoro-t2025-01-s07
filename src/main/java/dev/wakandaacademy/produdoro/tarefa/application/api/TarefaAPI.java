@@ -1,5 +1,6 @@
 package dev.wakandaacademy.produdoro.tarefa.application.api;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -24,9 +25,16 @@ public interface TarefaAPI {
     void concluiTarefa(@RequestHeader(name = "Authorization", required = true) String token,
     		@PathVariable UUID idTarefa);
 
+
     @DeleteMapping("/deleta-todas-tarefas/{idUsuario}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     void deletaTodasTarefas(@RequestHeader(name = "Authorization", required = true) String token,
                        @PathVariable UUID idUsuario);
+
+    @GetMapping("/usuario/{idUsuario}")
+    @ResponseStatus(code = HttpStatus.OK)
+    List<TarefaListResponse> getTodasTarefasDoUsuário(@RequestHeader(name = "Authorization", required = true) String token,
+                                                      @PathVariable UUID idUsuario);
+
 
 }

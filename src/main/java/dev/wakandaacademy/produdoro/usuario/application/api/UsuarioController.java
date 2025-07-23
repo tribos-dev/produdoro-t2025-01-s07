@@ -50,7 +50,8 @@ public class UsuarioController implements UsuarioAPI {
     @Override
     public void mudaStatusParaPausaCurta(String token, UUID idUsuario) {
         log.info("[inicia] UsuarioController - mudaStatusParaPausaCurta");
-        String usuarioEmail = getUsuarioByToken(token);
+        String usuarioEmail = tokenService.getUsuarioByBearerToken(token)
+                .orElseThrow(() -> APIException.build(HttpStatus.UNAUTHORIZED, "credencial de autenticação não é válida"));
         usuarioAppplicationService.mudaStatusParaPausaCurta(usuarioEmail, idUsuario);
         log.info("[finaliza] UsuarioController - mudaStatusParaPausaCurta");
 

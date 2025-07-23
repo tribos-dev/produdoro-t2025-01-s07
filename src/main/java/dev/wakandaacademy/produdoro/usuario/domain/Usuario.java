@@ -55,13 +55,14 @@ public class Usuario {
         }
     }
 
-    public void mudaStatusParaPausaCurta() {
-        verificaStatusPausaCurta();
+    public void mudaStatusParaPausaCurta(UUID idUsuario) {
+        validaUsuario(idUsuario);
+        verificaStatusPausaCurta(StatusUsuario.PAUSA_CURTA);
         this.status = StatusUsuario.PAUSA_CURTA;
     }
 
-    private void verificaStatusPausaCurta() {
-        if (this.idUsuario.equals(StatusUsuario.PAUSA_CURTA)) {
+    private void verificaStatusPausaCurta(StatusUsuario pausaCurta) {
+        if (this.status.equals(StatusUsuario.PAUSA_CURTA)) {
             throw APIException.build(HttpStatus.CONFLICT, "Usuário já está em PAUSA CURTA");
         }
     }

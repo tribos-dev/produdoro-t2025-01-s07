@@ -20,7 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UsuarioController implements UsuarioAPI {
 	private final UsuarioService usuarioAppplicationService;
-	private TokenService tokenService;
+	private final TokenService tokenService;
 
 	@Override
 	public UsuarioCriadoResponse postNovoUsuario(@Valid UsuarioNovoRequest usuarioNovo) {
@@ -50,7 +50,7 @@ public class UsuarioController implements UsuarioAPI {
 	private String getUsuarioByToken(String token) {
 		log.debug("[token] {}", token);
 		String usuario = tokenService.getUsuarioByBearerToken(token)
-				.orElseThrow(() -> APIException.build(HttpStatus.UNAUTHORIZED, "Credencial de autenticação inválida"));
+				.orElseThrow(() -> APIException.build(HttpStatus.UNAUTHORIZED, "Credencial de autenticação não é válida"));
 		log.info("[usuario] {}", usuario);
 		return usuario;
 	}

@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import javax.validation.constraints.Email;
 import java.util.UUID;
 
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
@@ -44,14 +44,26 @@ public class Usuario {
     }
 
     private void verificaStatus(StatusUsuario statusUsuario) {
-        if(this.status.equals(statusUsuario)){
+        if (this.status.equals(statusUsuario)) {
             throw APIException.build(HttpStatus.CONFLICT, "Usuário já está em FOCO");
         }
     }
 
-    private void validaUsuario(UUID idUsuario) {
+    public void validaUsuario(UUID idUsuario) {
         if (!this.idUsuario.equals(idUsuario)) {
             throw APIException.build(HttpStatus.UNAUTHORIZED, "credencial de autenticação não é valida");
+        }
+    }
+
+    public void mudaStatusParaPausaCurta(UUID idUsuario) {
+        validaUsuario(idUsuario);
+        verificaStatusPausaCurta(StatusUsuario.PAUSA_CURTA);
+        this.status = StatusUsuario.PAUSA_CURTA;
+    }
+
+    private void verificaStatusPausaCurta(StatusUsuario pausaCurta) {
+        if (this.status.equals(StatusUsuario.PAUSA_CURTA)) {
+            throw APIException.build(HttpStatus.CONFLICT, "Usuário já está em PAUSA CURTA");
         }
     }
 }

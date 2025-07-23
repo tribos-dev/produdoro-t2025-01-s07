@@ -1,6 +1,8 @@
 package dev.wakandaacademy.produdoro.tarefa.application.service;
 
 import dev.wakandaacademy.produdoro.DataHelper;
+import dev.wakandaacademy.produdoro.handler.APIException;
+import dev.wakandaacademy.produdoro.tarefa.application.api.EditaTarefaRequest;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaIdResponse;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaListResponse;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
@@ -14,14 +16,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -74,6 +76,7 @@ class TarefaApplicationServiceTest {
 
 
     @Test
+
     void deveConcluirTarefa() {
         Usuario usuario = DataHelper.createUsuario();
         Tarefa tarefa = DataHelper.createTarefa();
@@ -88,4 +91,77 @@ class TarefaApplicationServiceTest {
         verify(tarefaRepository, times(1)).buscaTarefaPorId(tarefa.getIdTarefa());
         verify(tarefaRepository, times(1)).salva(tarefa);
     }
+
+    @Test
+    void deveEditarTarefa() {
+        Usuario usuario = DataHelper.createUsuario();
+        Tarefa tarefa = DataHelper.createTarefa();
+
+        EditaTarefaRequest editaTarefaRequest = new EditaTarefaRequest("Testando Alteracao");
+
+        when(usuarioRepository.buscaUsuarioPorEmail(usuario.getEmail())).thenReturn(usuario);
+        when(tarefaRepository.buscaTarefaPorId(tarefa.getIdTarefa())).thenReturn(Optional.of(tarefa));
+        tarefaApplicationService.editaTarefa(usuario.getEmail(), tarefa.getIdTarefa(), editaTarefaRequest);
+
+        assertEquals("Testando Alteracao", tarefa.getDescricao());
+        verify(tarefaRepository).salva(tarefa);
+    }
+
+    @Test
+    void deveLancarExcexaoSeUsuarioNaoEhDonoDaTarefa(){
+        Usuario usuarioLogado = DataHelper.createUsuarioDiferente();
+        Tarefa tarefa = DataHelper.createTarefa();
+
+        EditaTarefaRequest editaTarefaRequest = new EditaTarefaRequest("Testando Alteração");
+
+        when(usuarioRepository.buscaUsuarioPorEmail(usuarioLogado.getEmail())).thenReturn(usuarioLogado);
+        when(tarefaRepository.buscaTarefaPorId(tarefa.getIdTarefa())).thenReturn(Optional.of(tarefa));
+        APIException exception = assertThrows(
+                APIException.class, () -> tarefaApplicationService.editaTarefa(usuarioLogado.getEmail(), tarefa.getIdTarefa(), editaTarefaRequest)
+        );
+
+        assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatusException());
+        assertEquals("Usuário não é dono da Tarefa solicitada!", exception.getMessage());
+        verify(tarefaRepository, never()).salva(any());
+    }
+
+    @Test
+    void deveLancarExcexaoSeDescricaoDaTarefaEstiverVazia() {
+        Usuario usuario = DataHelper.createUsuario();
+        Tarefa tarefa = DataHelper.createTarefa();
+
+        EditaTarefaRequest editaTarefaRequest = new EditaTarefaRequest("");
+
+
+        when(usuarioRepository.buscaUsuarioPorEmail(usuario.getEmail())).thenReturn(usuario);
+        when(tarefaRepository.buscaTarefaPorId(tarefa.getIdTarefa())).thenReturn(Optional.of(tarefa));
+        APIException exception = assertThrows(
+                APIException.class, () -> tarefaApplicationService.editaTarefa(usuario.getEmail(), tarefa.getIdTarefa(), editaTarefaRequest)
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusException());
+        assertEquals("O campo descrição não pode estar vazio", exception.getMessage());
+        verify(tarefaRepository, never()).salva(any());
+
+    }
+
+    @Test
+    void deveLancarExcecaoQuandoTarefaForInexistente() {
+        Usuario usuario = DataHelper.createUsuario();
+        Tarefa tarefa = DataHelper.createTarefa();
+
+        EditaTarefaRequest editaTarefaRequest = new EditaTarefaRequest("Teste");
+
+        when(usuarioRepository.buscaUsuarioPorEmail(usuario.getEmail())).thenReturn(usuario);
+        when(tarefaRepository.buscaTarefaPorId(tarefa.getIdTarefa())).thenReturn(Optional.empty());
+        APIException exception = assertThrows(
+                APIException.class, () -> tarefaApplicationService.editaTarefa(usuario.getEmail(), tarefa.getIdTarefa(), editaTarefaRequest)
+        );
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusException());
+        assertEquals("Tarefa não encontrada!", exception.getMessage());
+        verify(tarefaRepository, never()).salva(any());
+
+    }
+
 }

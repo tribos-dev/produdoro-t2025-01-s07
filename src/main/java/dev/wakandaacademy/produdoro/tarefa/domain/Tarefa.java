@@ -18,7 +18,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -62,14 +61,20 @@ public class Tarefa {
 		this.status = StatusTarefa.CONCLUIDA;
     }
 
-	public void setDescricao(UUID idUsuario, String novaDescricao) {
+	public void mudaDescricao(UUID idUsuario, String novaDescricao) {
 		validaUsuario(idUsuario);
+		validaSeDescricaoNaoEstaVazia(novaDescricao);
 		this.descricao = novaDescricao;
 	}
 
 	private void validaUsuario(UUID idUsuario) {
 		if (!this.idUsuario.equals(idUsuario)) {
 			throw APIException.build(HttpStatus.UNAUTHORIZED, "credencial de autenticação não é valida");
+		}
+	}
+	public void validaSeDescricaoNaoEstaVazia(String descricao){
+		if (descricao == null || descricao.isEmpty()) {
+			throw APIException.build(HttpStatus.BAD_REQUEST, "O campo descrição não pode estar vazio");
 		}
 	}
 }

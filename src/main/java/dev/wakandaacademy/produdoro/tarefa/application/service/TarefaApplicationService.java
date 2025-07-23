@@ -58,7 +58,7 @@ public class TarefaApplicationService implements TarefaService {
         log.info("[inicia] TarefaApplicationService - editaTarefa");
         Usuario usuario = usuarioRepository.buscaUsuarioPorEmail(emailUsuario);
         Tarefa tarefa = detalhaTarefa(emailUsuario, idTarefa);
-        tarefa.setDescricao(usuario.getIdUsuario(), editaTarefaRequest.getDescricao());
+        tarefa.mudaDescricao(usuario.getIdUsuario(), editaTarefaRequest.getDescricao());
         tarefaRepository.salva(tarefa);
         log.info("[finaliza] TarefaApplicationService - editaTarefa");
     }

@@ -47,4 +47,12 @@ public class TarefaInfraRepository implements TarefaRepository {
         log.info("[finaliza] TarefaInfraRepository - buscaTarefasPorUsuario");
         return tarefasPorUsuario;
     }
+
+    @Override
+    public int obterPosicaoParaNovaTarefa(UUID idUsuario) {
+        log.info("[start] TarefaInfraRepository - obterPosicaoParaNovaTarefa");
+        int totalTarefas = tarefaSpringMongoDBRepository.countByIdUsuario(idUsuario);
+        log.debug("[finish] TarefaInfraRepository - obterPosicaoParaNovaTarefa");
+        return totalTarefas;
+    }
 }

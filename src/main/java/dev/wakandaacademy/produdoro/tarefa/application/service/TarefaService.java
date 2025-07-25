@@ -12,4 +12,6 @@ public interface TarefaService {
     Tarefa detalhaTarefa(String usuario, UUID idTarefa);
     void concluiTarefa(String emailUsuario, UUID idTarefa);
     List<TarefaListResponse> getTodasTarefasDoUsuario(String usuario, UUID idUsuario);
+
+    void deletaTarefasConcluidas(String usuario, UUID idUsuario);
 }

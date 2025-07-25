@@ -30,7 +30,7 @@ public interface TarefaAPI {
     List<TarefaListResponse> getTodasTarefasDoUsuário(@RequestHeader(name = "Authorization", required = true) String token,
                                                       @PathVariable UUID idUsuario);
 
-    @DeleteMapping("/deleta-tarefas-concluidas")
+    @DeleteMapping("/deleta-tarefas-concluidas/{idUsuario}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     void deletaTarefasConcluidaas(@RequestHeader(name = "Authorization" , required = true) String token,
                       @PathVariable UUID idUsuario);

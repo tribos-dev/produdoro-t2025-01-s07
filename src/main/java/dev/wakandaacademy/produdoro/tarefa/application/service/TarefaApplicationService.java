@@ -63,4 +63,22 @@ public class TarefaApplicationService implements TarefaService {
         log.info("[finaliza] TarefaApplicationService - getTodasTarefasDoUsuario");
         return TarefaListResponse.converte(tarefas);
     }
+
+    @Override
+    public void deletaTarefasConcluidas(String usuario, UUID idUsuario) {
+        log.info("[inicia] TarefaApplicationService - deletaTarefasConcluidas");
+        validaUsuario(usuario, idUsuario);
+        List<Tarefa> tarefasConcluidas = tarefaRepository.buscaTarefasPorUsuario(idUsuario);
+        if (tarefasConcluidas.isEmpty()) {
+            throw APIException.build(HttpStatus.NOT_FOUND, "Usuário não possui nenhuma tarefa concluída");
+        }
+        tarefaRepository.deletaTarefasConcluidas(tarefasConcluidas);
+        log.info("[finaliza] TarefaApplicationService - deletaTarefasConcluidas");
+    }
+
+    private void validaUsuario(String usuario, UUID idUsuario) {
+        Usuario usuarioPorEmail = usuarioRepository.buscaUsuarioPorEmail(usuario);
+        usuarioRepository.buscaUsuarioPorId(idUsuario);
+        usuarioPorEmail.validaUsuario(idUsuario);
+    }
 }

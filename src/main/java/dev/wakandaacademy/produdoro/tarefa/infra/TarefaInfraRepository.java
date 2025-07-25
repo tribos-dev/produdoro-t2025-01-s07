@@ -47,4 +47,16 @@ public class TarefaInfraRepository implements TarefaRepository {
         log.info("[finaliza] TarefaInfraRepository - buscaTarefasPorUsuario");
         return tarefasPorUsuario;
     }
+
+    @Override
+    public void deletaTarefasConcluidas(List<Tarefa> tarefasConcluidas) {
+        log.info("[inicia] TarefaInfraRepository - deletaTarefasConcluidas");
+        try {
+            tarefaSpringMongoDBRepository.deleteAll(tarefasConcluidas);
+        } catch (DataIntegrityViolationException e) {
+            throw APIException.build(HttpStatus.BAD_REQUEST, "Erro ao deletar tarefas concluídas", e);
+        }
+        log.info("[finaliza] TarefaInfraRepository - deletaTarefasConcluidas");
+
+    }
 }

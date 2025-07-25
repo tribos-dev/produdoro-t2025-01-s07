@@ -61,4 +61,16 @@ public class Usuario {
 			throw APIException.build(HttpStatus.UNAUTHORIZED, "Usuário(a) não autorizado(a) para a requisição solicitada");
 		}
 	}
+
+	public void mudaStatusParaPausaCurta(UUID idUsuario) {
+		validarUsuario(idUsuario);
+		validarStatusPausaCurta();
+		this.status = StatusUsuario.PAUSA_CURTA;
+	}
+
+	private void validarStatusPausaCurta() {
+		if (this.status.equals(StatusUsuario.PAUSA_CURTA)){
+			throw APIException.build(HttpStatus.CONFLICT, "Usuário já está em pausa curta");
+		}
+	}
 }

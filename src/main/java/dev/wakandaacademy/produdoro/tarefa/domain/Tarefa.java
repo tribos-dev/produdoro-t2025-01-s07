@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import dev.wakandaacademy.produdoro.handler.APIException;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
+import dev.wakandaacademy.produdoro.usuario.domain.StatusUsuario;
 import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
 
 import org.springframework.data.annotation.Id;
@@ -53,6 +54,33 @@ public class Tarefa {
 	public void pertenceAoUsuario(Usuario usuarioPorEmail) {
 		if(!this.idUsuario.equals(usuarioPorEmail.getIdUsuario())) {
 			throw APIException.build(HttpStatus.UNAUTHORIZED, "Usuário não é dono da Tarefa solicitada!");
+		}
+	}
+
+    public void incrementaPomodoro(Tarefa tarefa, Usuario usuario) {
+		pertenceAoUsuario(usuario);
+		verificaSeUsuarioEstaEmFoco(usuario);
+		ativaTarefa();
+		this.contagemPomodoro++;
+		verificaQuantidadePomodoro(tarefa, usuario);
+    }
+
+	private void verificaQuantidadePomodoro(Tarefa tarefa, Usuario usuario) {
+		int totalPomodoro = tarefa.getContagemPomodoro();
+		if (totalPomodoro %4 == 0) {
+			usuario.mudaStatusParaPausaLonga(usuario.getIdUsuario());
+		}else {
+			usuario.mudaStatusParaPausaCurta(usuario.getIdUsuario());
+		}
+	}
+
+	private void ativaTarefa() {
+		this.statusAtivacao = StatusAtivacaoTarefa.ATIVA;
+	}
+
+	private void verificaSeUsuarioEstaEmFoco(Usuario usuario) {
+		if (!usuario.getStatus().equals(StatusUsuario.FOCO)){
+			throw APIException.build(HttpStatus.CONFLICT, "O Usuário não está em foco!");
 		}
 	}
 }

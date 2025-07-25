@@ -88,4 +88,14 @@ class TarefaApplicationServiceTest {
         verify(tarefaRepository, times(1)).buscaTarefaPorId(tarefa.getIdTarefa());
         verify(tarefaRepository, times(1)).salva(tarefa);
     }
+
+    @Test
+    void deveDeletarTarefasConcluidas() {
+        Usuario usuario = DataHelper.createUsuario();
+        List<Tarefa> tarefas = DataHelper.createListTarefaConcluidas();
+        when(usuarioRepository.buscaUsuarioPorEmail(usuario.getEmail())).thenReturn(usuario);
+        when(tarefaRepository.buscaTarefasPorUsuario(usuario.getIdUsuario())).thenReturn(tarefas);
+        tarefaApplicationService.deletaTarefasConcluidas(usuario.getEmail(), usuario.getIdUsuario());
+        verify(tarefaRepository, times(1)).deletaTarefasConcluidas(tarefas);
+    }
 }

@@ -31,9 +31,16 @@ public interface TarefaAPI {
                      @PathVariable UUID idTarefa,
                      @RequestBody @Valid EditaTarefaRequest editaTarefaRequest);
 
+
+    @DeleteMapping("/deleta-todas-tarefas/{idUsuario}")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    void deletaTodasTarefas(@RequestHeader(name = "Authorization", required = true) String token,
+                       @PathVariable UUID idUsuario);
+
     @GetMapping("/usuario/{idUsuario}")
     @ResponseStatus(code = HttpStatus.OK)
     List<TarefaListResponse> getTodasTarefasDoUsuário(@RequestHeader(name = "Authorization", required = true) String token,
                                                       @PathVariable UUID idUsuario);
+
 
 }

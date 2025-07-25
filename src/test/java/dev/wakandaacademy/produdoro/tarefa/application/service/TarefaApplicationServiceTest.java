@@ -13,6 +13,7 @@ import dev.wakandaacademy.produdoro.DataHelper;
 import dev.wakandaacademy.produdoro.config.security.service.TokenService;
 import dev.wakandaacademy.produdoro.handler.APIException;
 import dev.wakandaacademy.produdoro.usuario.application.repository.UsuarioRepository;
+import dev.wakandaacademy.produdoro.usuario.domain.StatusUsuario;
 import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -104,6 +105,25 @@ class TarefaApplicationServiceTest {
     @Test
     void naoDeveIncrementarPomodoro_usuarioNaoAutorizado() {
         //cenario
+        Usuario usuarioNaoDonoTarefa = Usuario.builder()
+                .idUsuario(UUID.randomUUID())
+                .email("naoDono@email.com")
+                .status(StatusUsuario.FOCO)
+                .build();
 
+        Tarefa tarefa = DataHelper.createTarefa();
+
+        when(usuarioRepository.buscaUsuarioPorEmail(usuarioNaoDonoTarefa.getEmail())).thenReturn(usuarioNaoDonoTarefa);
+        when(tarefaRepository.buscaTarefaPorId(tarefa.getIdTarefa())).thenReturn(Optional.of(tarefa));
+
+        //acao
+        APIException exception = assertThrows(APIException.class, () -> tarefaApplicationService.incrementaPomodoro(usuarioNaoDonoTarefa.getEmail(), tarefa.getIdTarefa()));
+
+        //vericacao
+        assertEquals(401, exception.getStatusException());
+        assertEquals("Usuário não é o dono da Tarefa solicitada!", exception.getMessage());
+
+        verify(usuarioRepository, times(1)).buscaUsuarioPorEmail(usuarioNaoDonoTarefa.getEmail());
+        verify(tarefaRepository, times(1)).buscaTarefaPorId(tarefa.getIdTarefa());
     }
 }

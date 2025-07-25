@@ -26,4 +26,6 @@ public interface TarefaAPI {
     TarefaDetalhadoResponse detalhaTarefa(@RequestHeader(name = "Authorization",required = true) String token, 
     		@PathVariable UUID idTarefa);
 
+    void incrementaPomodoro(@RequestHeader(name = "Authorization", required = true) String token,
+                            @PathVariable UUID idTarefa);
 }

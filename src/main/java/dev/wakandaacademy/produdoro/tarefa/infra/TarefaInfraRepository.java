@@ -1,6 +1,7 @@
 package dev.wakandaacademy.produdoro.tarefa.infra;
 
 import dev.wakandaacademy.produdoro.handler.APIException;
+import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaNovaPosicaoRequest;
 import dev.wakandaacademy.produdoro.tarefa.application.repository.TarefaRepository;
 import dev.wakandaacademy.produdoro.tarefa.domain.Tarefa;
 import lombok.RequiredArgsConstructor;
@@ -54,5 +55,11 @@ public class TarefaInfraRepository implements TarefaRepository {
         int totalTarefas = tarefaSpringMongoDBRepository.countByIdUsuario(idUsuario);
         log.debug("[finish] TarefaInfraRepository - obterPosicaoParaNovaTarefa");
         return totalTarefas;
+    }
+
+    @Override
+    public void atualizaPosicaoTarefa(String emailUsuario, UUID idTarefa, TarefaNovaPosicaoRequest novaPosicao) {
+        log.info("[start] TarefaInfraRepository - atualizaPosicaoTarefa");
+        log.debug("[finish] TarefaInfraRepository - atualizaPosicaoTarefa");
     }
 }

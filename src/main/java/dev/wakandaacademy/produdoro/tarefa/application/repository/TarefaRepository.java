@@ -1,5 +1,6 @@
 package dev.wakandaacademy.produdoro.tarefa.application.repository;
 
+import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaNovaPosicaoRequest;
 import dev.wakandaacademy.produdoro.tarefa.domain.Tarefa;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface TarefaRepository {
     List<Tarefa> buscaTarefasPorUsuario(UUID idUsuario);
 
     int obterPosicaoParaNovaTarefa(UUID idUsuario);
+
+    void atualizaPosicaoTarefa(String emailUsuario, UUID idTarefa, TarefaNovaPosicaoRequest novaPosicao);
 }

@@ -111,9 +111,9 @@ public class TarefaApplicationService implements TarefaService {
     }
 
     @Override
-    public void alteraPosicaoTarefa(String usuario, UUID idTarefa, NovaPosicaoRequest novaPosicao) {
+    public void alteraPosicaoTarefa(String emailUsuario, UUID idTarefa, NovaPosicaoRequest novaPosicao) {
         log.info("[start] TarefaApplicationService - alteraPosicaoTarefa");
-        Tarefa tarefa = detalhaTarefa(usuario, idTarefa);
+        Tarefa tarefa = detalhaTarefa(emailUsuario, idTarefa);
         List<Tarefa> todasTarefas = tarefaRepository.buscaTarefasPorUsuario(tarefa.getIdUsuario());
         tarefaRepository.novaPosicaoTarefa(tarefa, todasTarefas, novaPosicao);
         log.info("[finish] TarefaApplicationService - alteraPosicaoTarefa");

@@ -20,6 +20,6 @@ public interface TarefaService {
 
     void editaTarefa(String emailUsuario, UUID idTarefa, @Valid EditaTarefaRequest editaTarefaRequest);
 
-    void alteraPosicaoTarefa(String usuario, UUID idTarefa, NovaPosicaoRequest novaPosicao);
+    void alteraPosicaoTarefa(String emailUsuario, UUID idTarefa, NovaPosicaoRequest novaPosicao);
 
 }

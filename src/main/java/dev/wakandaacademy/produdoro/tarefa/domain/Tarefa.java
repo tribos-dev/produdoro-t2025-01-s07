@@ -73,4 +73,8 @@ public class Tarefa {
             throw APIException.build(HttpStatus.BAD_REQUEST, "O campo descrição não pode estar vazio");
         }
     }
+
+    public void alteraPosicao(int novaPosicaoValue) {
+        this.posicaoTarefa = novaPosicaoValue;
+    }
 }

@@ -70,10 +70,10 @@ public class TarefaRestController implements TarefaAPI {
     }
 
     @Override
-    public void alteraPosicaoTarefa(String token, UUID idTarefa, TarefaNovaPosicaoRequest novaPosicao) {
+    public void alteraPosicaoTarefa(String token, UUID idTarefa, NovaPosicaoRequest novaPosicao) {
         log.info("[start] TarefaRestController - alteraPosicaoTarefa");
         String emailUsuario = getUsuarioByToken(token);
-        tarefaService.atualizaPosicaoTarefa(emailUsuario, idTarefa, novaPosicao);
+        tarefaService.alteraPosicaoTarefa(emailUsuario, idTarefa, novaPosicao);
         log.debug("[finish] TarefaRestController - alteraPosicaoTarefa");
     }
 }

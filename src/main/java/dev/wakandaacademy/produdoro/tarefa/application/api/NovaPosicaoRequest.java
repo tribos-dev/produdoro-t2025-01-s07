@@ -5,7 +5,7 @@ import lombok.Getter;
 import javax.validation.constraints.PositiveOrZero;
 
 @Getter
-public class TarefaNovaPosicaoRequest {
+public class NovaPosicaoRequest {
 
     @PositiveOrZero(message = "Posição deve ser maior ou igual a zero.")
     private int novaPosicao;

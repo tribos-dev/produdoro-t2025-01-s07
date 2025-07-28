@@ -1,6 +1,7 @@
 package dev.wakandaacademy.produdoro.tarefa.application.service;
 
 import dev.wakandaacademy.produdoro.handler.APIException;
+import dev.wakandaacademy.produdoro.tarefa.application.api.EditaTarefaRequest;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaIdResponse;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaListResponse;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
@@ -31,6 +32,7 @@ public class TarefaApplicationService implements TarefaService {
         log.info("[finaliza] TarefaApplicationService - criaNovaTarefa");
         return TarefaIdResponse.builder().idTarefa(tarefaCriada.getIdTarefa()).build();
     }
+
     @Override
     public Tarefa detalhaTarefa(String usuario, UUID idTarefa) {
         log.info("[inicia] TarefaApplicationService - detalhaTarefa");
@@ -51,6 +53,35 @@ public class TarefaApplicationService implements TarefaService {
         tarefa.mudaStatusParaConcluida(usuario);
         tarefaRepository.salva(tarefa);
         log.info("[finaliza] TarefaApplicationService - concluiTarefa");
+    }
+
+    @Override
+    public void deletaTodasTarefas(String emailUsuario, UUID idUsuario) {
+        log.info("[inicia] TarefaApplicationService - deletaTodasTarefas");
+        Usuario usuarioPorEmail = usuarioRepository.buscaUsuarioPorEmail(emailUsuario);
+        log.info("[usuarioPorEmail] {}", usuarioPorEmail);
+        usuarioRepository.buscaUsuarioPorId(idUsuario);
+        usuarioPorEmail.validaUsuario(idUsuario);
+        List<Tarefa> tarefas = tarefaRepository.buscaTarefasPorUsuario(idUsuario);
+        verificaListaEstaVazia(tarefas);
+        verificaQuantidadeTarefas(tarefas);
+        tarefaRepository.deletaTodasTarefas(tarefas);
+        log.info("[finaliza] TarefaApplicationService - deletaTodasTarefas");
+
+    }
+
+    private void verificaQuantidadeTarefas(List<Tarefa> tarefas) {
+        if (tarefas.size() < 2) {
+            throw APIException.build(HttpStatus.CONFLICT,
+                    "Usuário não possui quantidade minima de tarefa(as) cadastrada(as)");
+        }
+    }
+
+    private void verificaListaEstaVazia(List<Tarefa> tarefas) {
+        if (tarefas.isEmpty()){
+            throw APIException.build(HttpStatus.CONFLICT,
+                    "Usuário não possui tarefa(as) cadastrada(as)");
+        }
     }
 
     @Override
@@ -81,4 +112,15 @@ public class TarefaApplicationService implements TarefaService {
         usuarioRepository.buscaUsuarioPorId(idUsuario);
         usuarioPorEmail.validaUsuario(idUsuario);
     }
+
+    @Override
+    public void editaTarefa(String emailUsuario, UUID idTarefa, EditaTarefaRequest editaTarefaRequest) {
+        log.info("[inicia] TarefaApplicationService - editaTarefa");
+        Usuario usuario = usuarioRepository.buscaUsuarioPorEmail(emailUsuario);
+        Tarefa tarefa = detalhaTarefa(emailUsuario, idTarefa);
+        tarefa.mudaDescricao(usuario.getIdUsuario(), editaTarefaRequest.getDescricao());
+        tarefaRepository.salva(tarefa);
+        log.info("[finaliza] TarefaApplicationService - editaTarefa");
+    }
+
 }

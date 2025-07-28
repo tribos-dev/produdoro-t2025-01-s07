@@ -6,6 +6,7 @@ import java.util.UUID;
 import dev.wakandaacademy.produdoro.pomodoro.domain.ConfiguracaoPadrao;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
 import dev.wakandaacademy.produdoro.tarefa.domain.StatusAtivacaoTarefa;
+import dev.wakandaacademy.produdoro.tarefa.domain.StatusTarefa;
 import dev.wakandaacademy.produdoro.tarefa.domain.Tarefa;
 import dev.wakandaacademy.produdoro.usuario.application.api.UsuarioNovoRequest;
 import dev.wakandaacademy.produdoro.usuario.domain.StatusUsuario;
@@ -63,4 +64,16 @@ public class DataHelper {
 
         );
     }
-}
+
+    public static List<Tarefa> createListTarefaConcluidas() {
+        return List.of(
+                Tarefa.builder().idTarefa(UUID.randomUUID()).descricao("tarefa 1").idUsuario(usuario1)
+                        .status(StatusTarefa.A_FAZER).posicaoTarefa(1).build(),
+                Tarefa.builder().build(),
+                Tarefa.builder().idTarefa(UUID.randomUUID()).descricao("tarefa 2").posicaoTarefa(2).idUsuario(usuario1)
+                        .status(StatusTarefa.CONCLUIDA).build(),
+                Tarefa.builder().build(),
+                Tarefa.builder().idTarefa(UUID.randomUUID()).descricao("tarefa 3").posicaoTarefa(3).idUsuario(usuario1)
+                        .status(StatusTarefa.CONCLUIDA).build());
+    }
+    }

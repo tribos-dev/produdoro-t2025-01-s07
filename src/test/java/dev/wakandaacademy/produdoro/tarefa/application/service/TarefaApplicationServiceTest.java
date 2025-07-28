@@ -77,7 +77,6 @@ class TarefaApplicationServiceTest {
 
 
     @Test
-
     void deveConcluirTarefa() {
         Usuario usuario = DataHelper.createUsuario();
         Tarefa tarefa = DataHelper.createTarefa();
@@ -91,6 +90,20 @@ class TarefaApplicationServiceTest {
         verify(usuarioRepository, times(2)).buscaUsuarioPorEmail(usuario.getEmail());
         verify(tarefaRepository, times(1)).buscaTarefaPorId(tarefa.getIdTarefa());
         verify(tarefaRepository, times(1)).salva(tarefa);
+    }
+
+    @Test
+    void deletaTodasTarefasDoUsuario(){
+        Usuario usuario = DataHelper.createUsuario();
+        List<Tarefa> tarefas = DataHelper.createListTarefa();
+
+        when(usuarioRepository.buscaUsuarioPorId(any())).thenReturn(usuario);
+        when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
+        when(tarefaRepository.buscaTarefasPorUsuario(usuario.getIdUsuario())).thenReturn(tarefas);
+
+        tarefaApplicationService.deletaTodasTarefas(usuario.getEmail(), usuario.getIdUsuario());
+        verify(tarefaRepository, times(1)).deletaTodasTarefas(tarefas);
+
     }
 
     @Test

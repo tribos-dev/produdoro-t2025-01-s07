@@ -15,6 +15,8 @@ public interface TarefaRepository {
 
     List<Tarefa> buscaTarefasPorUsuario(UUID idUsuario);
 
+    void deletaTodasTarefas(List<Tarefa> tarefas);
+
     int obterPosicaoParaNovaTarefa(UUID idUsuario);
 
     void novaPosicaoTarefa(Tarefa tarefa, List<Tarefa> todasTarefas, NovaPosicaoRequest novaPosicao);

@@ -19,35 +19,56 @@ import java.util.UUID;
 @Log4j2
 @RequiredArgsConstructor
 public class UsuarioController implements UsuarioAPI {
-	private final UsuarioService usuarioAppplicationService;
-	private final TokenService tokenService;
+    private final TokenService tokenService;
+    private final UsuarioService usuarioAppplicationService;
 
-	@Override
-	public UsuarioCriadoResponse postNovoUsuario(@Valid UsuarioNovoRequest usuarioNovo) {
-		log.info("[inicia] UsuarioController - postNovoUsuario");
-		UsuarioCriadoResponse usuarioCriado = usuarioAppplicationService.criaNovoUsuario(usuarioNovo);
-		log.info("[finaliza] UsuarioController - postNovoUsuario");
-		return usuarioCriado;
-	}
-	@Override
-	public UsuarioCriadoResponse buscaUsuarioPorId(UUID idUsuario) {
-		log.info("[inicia] UsuarioController - buscaUsuarioPorId");
-		log.info("[idUsuario] {}", idUsuario);
-		UsuarioCriadoResponse buscaUsuario = usuarioAppplicationService.buscaUsuarioPorId(idUsuario);
-		log.info("[finaliza] UsuarioController - buscaUsuarioPorId");
-		return buscaUsuario;
-	}
+    @Override
+    public UsuarioCriadoResponse postNovoUsuario(@Valid UsuarioNovoRequest usuarioNovo) {
+        log.info("[inicia] UsuarioController - postNovoUsuario");
+        UsuarioCriadoResponse usuarioCriado = usuarioAppplicationService.criaNovoUsuario(usuarioNovo);
+        log.info("[finaliza] UsuarioController - postNovoUsuario");
+        return usuarioCriado;
+    }
 
-	@Override
-	public void mudaStatusParaPausaLonga(String token, UUID idUsuario) {
-		log.info("[inicia] UsuarioController - mudaStatusParaPausaLonga");
-		log.info("[idUsuario] {}", idUsuario);
-		String email = getUsuarioByToken(token);
-		usuarioAppplicationService.mudaStatusParaPausaLonga(email, idUsuario);
-		log.info("[finaliza] UsuarioController - mudaStatusParaPausaLonga");
-	}
+    @Override
+    public UsuarioCriadoResponse buscaUsuarioPorId(UUID idUsuario) {
+        log.info("[inicia] UsuarioController - buscaUsuarioPorId");
+        log.info("[idUsuario] {}", idUsuario);
+        UsuarioCriadoResponse buscaUsuario = usuarioAppplicationService.buscaUsuarioPorId(idUsuario);
+        log.info("[finaliza] UsuarioController - buscaUsuarioPorId");
+        return buscaUsuario;
+    }
 
-	private String getUsuarioByToken(String token) {
+    @Override
+    public void mudaStatusParaFoco(String token, UUID idUsuario) {
+        log.info("[inicia] UsuarioController - mudaStatusParaFoco");
+        String usuarioEmail = getUsuarioByToken(token);
+        usuarioAppplicationService.mudaStatusParaFoco(usuarioEmail, idUsuario);
+        log.info("[finaliza] UsuarioController - mudaStatusParaFoco");
+    }
+
+    @Override
+    public void mudaStatusParaPausaCurta(String token, UUID idUsuario) {
+        log.info("[inicia] UsuarioController - mudaStatusParaPausaCurta");
+        String usuarioEmail = tokenService.getUsuarioByBearerToken(token)
+                .orElseThrow(() -> APIException.build(HttpStatus.UNAUTHORIZED, "credencial de autenticação não é válida"));
+        usuarioAppplicationService.mudaStatusParaPausaCurta(usuarioEmail, idUsuario);
+        log.info("[finaliza] UsuarioController - mudaStatusParaPausaCurta");
+
+    }
+
+    @Override
+    public void mudaStatusParaPausaLonga(String token, UUID idUsuario) {
+        log.info("[inicia] UsuarioController - mudaStatusParaPausaLonga");
+        log.info("[idUsuario] {}", idUsuario);
+        String usuarioEmail = getUsuarioByToken(token);
+        usuarioAppplicationService.mudaStatusParaPausaLonga(usuarioEmail, idUsuario);
+        log.info("[finaliza] UsuarioController - mudaStatusParaPausaLonga");
+
+    }
+
+
+    private String getUsuarioByToken(String token) {
 		log.debug("[token] {}", token);
 		String usuario = tokenService.getUsuarioByBearerToken(token)
 				.orElseThrow(() -> APIException.build(HttpStatus.UNAUTHORIZED, "Credencial de autenticação não é válida"));

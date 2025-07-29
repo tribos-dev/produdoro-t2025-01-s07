@@ -57,6 +57,28 @@ public class Tarefa {
 		}
 	}
 
+    public void mudaStatusParaConcluida(Usuario usuario) {
+		pertenceAoUsuario(usuario);
+		this.status = StatusTarefa.CONCLUIDA;
+    }
+
+	public void mudaDescricao(UUID idUsuario, String novaDescricao) {
+		validaUsuario(idUsuario);
+		validaSeDescricaoNaoEstaVazia(novaDescricao);
+		this.descricao = novaDescricao;
+	}
+
+	private void validaUsuario(UUID idUsuario) {
+		if (!this.idUsuario.equals(idUsuario)) {
+			throw APIException.build(HttpStatus.UNAUTHORIZED, "credencial de autenticação não é valida");
+		}
+	}
+	public void validaSeDescricaoNaoEstaVazia(String descricao){
+		if (descricao == null || descricao.isEmpty()) {
+			throw APIException.build(HttpStatus.BAD_REQUEST, "O campo descrição não pode estar vazio");
+		}
+	}
+
     public void incrementaPomodoro(Tarefa tarefa, Usuario usuario) {
 		pertenceAoUsuario(usuario);
 		verificaSeUsuarioEstaEmFoco(usuario);

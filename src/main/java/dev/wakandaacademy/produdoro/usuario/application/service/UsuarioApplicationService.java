@@ -19,30 +19,46 @@ import java.util.UUID;
 @Log4j2
 @RequiredArgsConstructor
 public class UsuarioApplicationService implements UsuarioService {
-	private final PomodoroService pomodoroService;
-	private final CredencialService credencialService;
-	private final UsuarioRepository usuarioRepository;
+    private final PomodoroService pomodoroService;
+    private final CredencialService credencialService;
+    private final UsuarioRepository usuarioRepository;
 
-	@Override
-	public UsuarioCriadoResponse criaNovoUsuario(@Valid UsuarioNovoRequest usuarioNovo) {
-		log.info("[inicia] UsuarioApplicationService - criaNovoUsuario");
-		var configuracaoPadrao = pomodoroService.getConfiguracaoPadrao();
-		credencialService.criaNovaCredencial(usuarioNovo);
-		var usuario = new Usuario(usuarioNovo,configuracaoPadrao);
-		usuarioRepository.salva(usuario);
-		log.info("[finaliza] UsuarioApplicationService - criaNovoUsuario");
-		return new UsuarioCriadoResponse(usuario);
-	}
+    @Override
+    public UsuarioCriadoResponse criaNovoUsuario(@Valid UsuarioNovoRequest usuarioNovo) {
+        log.info("[inicia] UsuarioApplicationService - criaNovoUsuario");
+        var configuracaoPadrao = pomodoroService.getConfiguracaoPadrao();
+        credencialService.criaNovaCredencial(usuarioNovo);
+        var usuario = new Usuario(usuarioNovo, configuracaoPadrao);
+        usuarioRepository.salva(usuario);
+        log.info("[finaliza] UsuarioApplicationService - criaNovoUsuario");
+        return new UsuarioCriadoResponse(usuario);
+    }
 
+    @Override
+    public UsuarioCriadoResponse buscaUsuarioPorId(UUID idUsuario) {
+        log.info("[inicia] UsuarioApplicationService - buscaUsuarioPorId");
+        Usuario usuario = usuarioRepository.buscaUsuarioPorId(idUsuario);
+        log.info("[finaliza] UsuarioApplicationService - buscaUsuarioPorId");
+        return new UsuarioCriadoResponse(usuario);
+    }
 
-	@Override
-	public UsuarioCriadoResponse buscaUsuarioPorId(UUID idUsuario) {
-		log.info("[inicia] UsuarioApplicationService - buscaUsuarioPorId");
-		Usuario usuario = usuarioRepository.buscaUsuarioPorId(idUsuario);
-		log.info("[finaliza] UsuarioApplicationService - buscaUsuarioPorId");
-		return new UsuarioCriadoResponse(usuario);
-	}
+    @Override
+    public void mudaStatusParaFoco(String usuarioEmail, UUID idUsuario) {
+        log.info("[inicia] UsuarioApplicationService - mudaStatusParaFoco");
+        Usuario usuario = usuarioRepository.buscaUsuarioPorEmail(usuarioEmail);
+        usuario.mudaStatusParaFoco(idUsuario);
+        usuarioRepository.salva(usuario);
+        log.info("[finaliza] UsuarioApplicationService - mudaStatusParaFoco");
+    }
 
+    @Override
+    public void mudaStatusParaPausaCurta(String usuarioEmail, UUID idUsuario) {
+        log.info("[inicia] UsuarioApplicationService - mudaStatusParaPausaCurta");
+        Usuario usuario = usuarioRepository.buscaUsuarioPorEmail(usuarioEmail);
+        usuario.mudaStatusParaPausaCurta(idUsuario);
+        usuarioRepository.salva(usuario);
+        log.info("[finaliza] UsuarioApplicationService - mudaStatusParaPausaCurta");
+    }
 	@Override
 	public void mudaStatusParaPausaLonga(String email, UUID idUsuario) {
 		log.info("[inicia] UsuarioApplicationService - mudaStatusParaPausaLonga");

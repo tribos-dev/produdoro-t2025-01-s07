@@ -67,9 +67,19 @@ public class Usuario {
         }
     }
 
-    public void mudaStatusParaPausaLonga(UUID idUsuario) {
+    public void verificaStatusPausaCurtaPausaLonga() {
         if (this.status.equals(StatusUsuario.PAUSA_LONGA)) {
             throw APIException.build(HttpStatus.CONFLICT, "Usuário já está em PAUSA LONGA");
         }
+    }
+
+    public void mudaStatusParaPausaLonga(UUID idUsuario) {
+        validaUsuario(idUsuario);
+        verificaStatusPausaCurtaPausaLonga();
+        mudaStatusPausaLonga();
+    }
+
+    private void mudaStatusPausaLonga() {
+        this.status = StatusUsuario.PAUSA_LONGA;
     }
 }

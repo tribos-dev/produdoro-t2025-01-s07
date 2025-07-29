@@ -79,16 +79,16 @@ public class Tarefa {
 		}
 	}
 
-    public void incrementaPomodoro(Tarefa tarefa, Usuario usuario) {
+    public void incrementaPomodoro(Usuario usuario) {
 		pertenceAoUsuario(usuario);
 		verificaSeUsuarioEstaEmFoco(usuario);
 		ativaTarefa();
 		this.contagemPomodoro++;
-		verificaQuantidadePomodoro(tarefa, usuario);
+		verificaQuantidadePomodoro(usuario);
     }
 
-	private void verificaQuantidadePomodoro(Tarefa tarefa, Usuario usuario) {
-		int totalPomodoro = tarefa.getContagemPomodoro();
+	private void verificaQuantidadePomodoro(Usuario usuario) {
+		int totalPomodoro = this.contagemPomodoro;
 		if (totalPomodoro %4 == 0) {
 			usuario.mudaStatusParaPausaLonga(usuario.getIdUsuario());
 		}else {

@@ -134,8 +134,8 @@ class TarefaApplicationServiceTest {
         APIException exception = assertThrows(APIException.class, () -> tarefaApplicationService.incrementaPomodoro(usuarioNaoDonoTarefa.getEmail(), tarefa.getIdTarefa()));
 
         //vericacao
-        assertEquals(401, exception.getStatusException());
-        assertEquals("Usuário não é o dono da Tarefa solicitada!", exception.getMessage());
+        assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatusException());
+        assertEquals("Usuário não é dono da Tarefa solicitada!", exception.getMessage());
 
         verify(usuarioRepository, times(1)).buscaUsuarioPorEmail(usuarioNaoDonoTarefa.getEmail());
         verify(tarefaRepository, times(1)).buscaTarefaPorId(tarefa.getIdTarefa());

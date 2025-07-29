@@ -35,13 +35,6 @@ class UsuarioApplicationServiceTest {
     private  final String usuarioEmail = "usuario@teste.com";
     private  final UUID idUsuario = UUID.randomUUID();
 
-    @BeforeEach
-    void setup(){
-        MockitoAnnotations.openMocks(this);
-        usuarioMock = mock(Usuario.class);
-        when(usuarioRepository.buscaUsuarioPorEmail(usuarioEmail)).thenReturn(usuarioMock);
-    }
-
 
 
     @Test
@@ -151,7 +144,7 @@ class UsuarioApplicationServiceTest {
         APIException exception = assertThrows(APIException.class,
                 () -> usuarioApplicationService.mudaStatusParaPausaLonga("usuario@teste.com", idUsuario));
 
-        assertEquals("Usuário já está em pausa longa", exception.getMessage());
+        assertEquals("Usuário já está em PAUSA LONGA", exception.getMessage());
         assertEquals(HttpStatus.CONFLICT, exception.getStatusException());
         verify(usuarioRepository, times(1)).buscaUsuarioPorEmail("usuario@teste.com");
     }

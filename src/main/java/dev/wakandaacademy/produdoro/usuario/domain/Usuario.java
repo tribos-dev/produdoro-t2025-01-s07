@@ -59,12 +59,12 @@ public class Usuario {
         validaUsuario(idUsuario);
         verificaStatusPausaCurta(StatusUsuario.PAUSA_CURTA);
         this.status = StatusUsuario.PAUSA_CURTA;
-        incrementaQuantidadePomodoro();
+//        incrementaQuantidadePomodoro();
     }
 
-    private void incrementaQuantidadePomodoro() {
-        this.quantidadePomodorosPausaCurta++;
-    }
+//    private void incrementaQuantidadePomodoro() {
+//        this.quantidadePomodorosPausaCurta++;
+//    }
 
     private void verificaStatusPausaCurta(StatusUsuario pausaCurta) {
         if (this.status.equals(StatusUsuario.PAUSA_CURTA)) {

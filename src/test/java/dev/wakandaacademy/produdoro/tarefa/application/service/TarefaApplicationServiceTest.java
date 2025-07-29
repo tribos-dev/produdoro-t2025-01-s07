@@ -45,7 +45,8 @@ class TarefaApplicationServiceTest {
     @Test
     void deveRetornarIdTarefaNovaCriada() {
         TarefaRequest request = getTarefaRequest();
-        when(tarefaRepository.salva(any())).thenReturn(new Tarefa(request));
+        int posicaoTarefa = 1;
+        when(tarefaRepository.salva(any())).thenReturn(new Tarefa(request, posicaoTarefa));
 
         TarefaIdResponse response = tarefaApplicationService.criaNovaTarefa(request);
 
@@ -155,6 +156,16 @@ class TarefaApplicationServiceTest {
         verify(usuarioRepository, times(2)).buscaUsuarioPorEmail(usuario.getEmail());
         verify(tarefaRepository, times(1)).buscaTarefaPorId(tarefa.getIdTarefa());
         verify(tarefaRepository, times(1)).salva(tarefa);
+    }
+
+    @Test
+    void deveDeletarTarefasConcluidas() {
+        Usuario usuario = DataHelper.createUsuario();
+        List<Tarefa> tarefas = DataHelper.createListTarefaConcluidas();
+        when(usuarioRepository.buscaUsuarioPorEmail(usuario.getEmail())).thenReturn(usuario);
+        when(tarefaRepository.buscaTarefasConcluidas(usuario.getIdUsuario())).thenReturn(tarefas);
+        tarefaApplicationService.deletaTarefasConcluidas(usuario.getEmail(), usuario.getIdUsuario());
+        verify(tarefaRepository, times(1)).deletaTarefasConcluidas(tarefas);
     }
 
     @Test

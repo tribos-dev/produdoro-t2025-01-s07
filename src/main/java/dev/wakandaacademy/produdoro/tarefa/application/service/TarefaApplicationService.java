@@ -1,10 +1,7 @@
 package dev.wakandaacademy.produdoro.tarefa.application.service;
 
 import dev.wakandaacademy.produdoro.handler.APIException;
-import dev.wakandaacademy.produdoro.tarefa.application.api.EditaTarefaRequest;
-import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaIdResponse;
-import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaListResponse;
-import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
+import dev.wakandaacademy.produdoro.tarefa.application.api.*;
 import dev.wakandaacademy.produdoro.tarefa.application.repository.TarefaRepository;
 import dev.wakandaacademy.produdoro.tarefa.domain.Tarefa;
 import dev.wakandaacademy.produdoro.usuario.application.repository.UsuarioRepository;
@@ -28,9 +25,17 @@ public class TarefaApplicationService implements TarefaService {
     @Override
     public TarefaIdResponse criaNovaTarefa(TarefaRequest tarefaRequest) {
         log.info("[inicia] TarefaApplicationService - criaNovaTarefa");
-        Tarefa tarefaCriada = tarefaRepository.salva(new Tarefa(tarefaRequest));
+        int posicaoTarefa = obterPosicaoParaNovaTarefa(tarefaRequest.getIdUsuario());
+        Tarefa tarefaCriada = tarefaRepository.salva(new Tarefa(tarefaRequest, posicaoTarefa));
         log.info("[finaliza] TarefaApplicationService - criaNovaTarefa");
         return TarefaIdResponse.builder().idTarefa(tarefaCriada.getIdTarefa()).build();
+    }
+
+    private int obterPosicaoParaNovaTarefa(UUID idUsuario) {
+        log.info("[start] TarefaApplicationService - obterPosicaoParaNovaTarefa");
+        int posicaoTarefa = tarefaRepository.obterPosicaoParaNovaTarefa(idUsuario);
+        log.debug("[finish] TarefaApplicationService - obterPosicaoParaNovaTarefa");
+        return posicaoTarefa;
     }
 
     @Override
@@ -78,7 +83,7 @@ public class TarefaApplicationService implements TarefaService {
     }
 
     private void verificaListaEstaVazia(List<Tarefa> tarefas) {
-        if (tarefas.isEmpty()){
+        if (tarefas.isEmpty()) {
             throw APIException.build(HttpStatus.CONFLICT,
                     "Usuário não possui tarefa(as) cadastrada(as)");
         }
@@ -123,4 +128,12 @@ public class TarefaApplicationService implements TarefaService {
         log.info("[finaliza] TarefaApplicationService - editaTarefa");
     }
 
+    @Override
+    public void alteraPosicaoTarefa(String emailUsuario, UUID idTarefa, NovaPosicaoRequest novaPosicao) {
+        log.info("[start] TarefaApplicationService - alteraPosicaoTarefa");
+        Tarefa tarefa = detalhaTarefa(emailUsuario, idTarefa);
+        List<Tarefa> todasTarefas = tarefaRepository.buscaTarefasPorUsuario(tarefa.getIdUsuario());
+        tarefaRepository.novaPosicaoTarefa(tarefa, todasTarefas, novaPosicao);
+        log.info("[finish] TarefaApplicationService - alteraPosicaoTarefa");
+    }
 }

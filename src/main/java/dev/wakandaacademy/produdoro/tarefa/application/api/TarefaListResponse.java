@@ -20,6 +20,7 @@ public class TarefaListResponse {
     private StatusTarefa status;
     private StatusAtivacaoTarefa statusAtivacao;
     private int contagemPomodoro;
+    private int posicaoTarefa;
 
     public static List<TarefaListResponse> converte(List<Tarefa> tarefas) {
         return tarefas.stream()
@@ -36,5 +37,6 @@ public class TarefaListResponse {
         this.status = tarefa.getStatus();
         this.statusAtivacao = tarefa.getStatusAtivacao();
         this.contagemPomodoro = tarefa.getContagemPomodoro();
+        this.posicaoTarefa = tarefa.getPosicaoTarefa();
     }
 }

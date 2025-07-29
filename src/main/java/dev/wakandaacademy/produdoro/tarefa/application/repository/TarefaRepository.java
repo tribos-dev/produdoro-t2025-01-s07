@@ -14,12 +14,11 @@ public interface TarefaRepository {
     Optional<Tarefa> buscaTarefaPorId(UUID idTarefa);
 
     List<Tarefa> buscaTarefasPorUsuario(UUID idUsuario);
-<<<<<<< HEAD
 
-=======
     void deletaTarefasConcluidas(List<Tarefa> tarefasConcluidas);
+
     List<Tarefa> buscaTarefasConcluidas(UUID idUsuario);
->>>>>>> dev
+
     void deletaTodasTarefas(List<Tarefa> tarefas);
 
     int obterPosicaoParaNovaTarefa(UUID idUsuario);

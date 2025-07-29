@@ -18,6 +18,7 @@ import java.util.UUID;
 @Getter
 @Document(collection = "Tarefa")
 public class Tarefa {
+<<<<<<< HEAD
     @Id
     private UUID idTarefa;
     @NotBlank
@@ -32,6 +33,22 @@ public class Tarefa {
     private StatusAtivacaoTarefa statusAtivacao;
     private int contagemPomodoro;
     private int posicaoTarefa;
+=======
+	@Id
+	private UUID idTarefa;
+	@NotBlank
+	private String descricao;
+	@Indexed
+	private UUID idUsuario;
+	@Indexed
+	private UUID idArea;
+	@Indexed
+	private UUID idProjeto;
+	private StatusTarefa status;
+	private StatusAtivacaoTarefa statusAtivacao;
+	private int contagemPomodoro;
+	private int posicaoTarefa;
+>>>>>>> dev
 
     public Tarefa(TarefaRequest tarefaRequest, int posicaoTarefa) {
         this.idTarefa = UUID.randomUUID();

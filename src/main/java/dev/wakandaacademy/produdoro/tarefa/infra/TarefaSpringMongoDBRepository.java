@@ -1,5 +1,6 @@
 package dev.wakandaacademy.produdoro.tarefa.infra;
 
+import dev.wakandaacademy.produdoro.tarefa.domain.StatusTarefa;
 import dev.wakandaacademy.produdoro.tarefa.domain.Tarefa;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -12,5 +13,9 @@ public interface TarefaSpringMongoDBRepository extends MongoRepository<Tarefa, U
 
     List<Tarefa> findTarefasByIdUsuario(UUID idUsuario);
 
+<<<<<<< HEAD
     int countByIdUsuario(UUID idUsuario);
+=======
+    List<Tarefa> findAllByIdUsuarioAndStatus(UUID idUsuario, StatusTarefa statusTarefa);
+>>>>>>> dev
 }

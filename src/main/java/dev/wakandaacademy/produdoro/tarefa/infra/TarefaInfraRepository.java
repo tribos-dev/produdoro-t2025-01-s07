@@ -3,6 +3,7 @@ package dev.wakandaacademy.produdoro.tarefa.infra;
 import dev.wakandaacademy.produdoro.handler.APIException;
 import dev.wakandaacademy.produdoro.tarefa.application.api.NovaPosicaoRequest;
 import dev.wakandaacademy.produdoro.tarefa.application.repository.TarefaRepository;
+import dev.wakandaacademy.produdoro.tarefa.domain.StatusTarefa;
 import dev.wakandaacademy.produdoro.tarefa.domain.Tarefa;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -61,6 +62,27 @@ public class TarefaInfraRepository implements TarefaRepository {
         log.info("[finaliza] TarefaInfraRepository - buscaTarefasPorUsuario");
         return tarefasPorUsuario;
     }
+
+    @Override
+    public void deletaTarefasConcluidas(List<Tarefa> tarefasConcluidas) {
+        log.info("[inicia] TarefaInfraRepository - deletaTarefasConcluidas");
+        try {
+            tarefaSpringMongoDBRepository.deleteAll(tarefasConcluidas);
+        } catch (DataIntegrityViolationException e) {
+            throw APIException.build(HttpStatus.BAD_REQUEST, "Erro ao deletar tarefas concluídas", e);
+        }
+        log.info("[finaliza] TarefaInfraRepository - deletaTarefasConcluidas");
+
+    }
+
+    @Override
+    public List<Tarefa> buscaTarefasConcluidas(UUID idUsuario) {
+        log.info("[inicia] TarefaInfraRepository - buscaTarefasConcluidas");
+        List<Tarefa> tarefasConcluidas = tarefaSpringMongoDBRepository.findAllByIdUsuarioAndStatus(idUsuario, StatusTarefa.CONCLUIDA);
+        log.info("[finaliza] TarefaInfraRepository - buscaTarefasConcluidas");
+        return tarefasConcluidas;
+    }
+
 
     @Override
     public void deletaTodasTarefas(List<Tarefa> tarefas) {

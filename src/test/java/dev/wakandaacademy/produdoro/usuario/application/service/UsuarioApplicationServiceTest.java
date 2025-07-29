@@ -14,18 +14,28 @@ import org.springframework.http.HttpStatus;
 
 import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.mockito.MockitoAnnotations;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UsuarioApplicationServiceTest {
-
     @InjectMocks
     UsuarioApplicationService usuarioApplicationService;
 
     @Mock
     UsuarioRepository usuarioRepository;
+
+    private Usuario usuarioMock;
+    private  final String usuarioEmail = "usuario@teste.com";
+    private  final UUID idUsuario = UUID.randomUUID();
+
+
 
     @Test
     void deveMudarStatusParaFoco() {
@@ -112,5 +122,30 @@ class UsuarioApplicationServiceTest {
         verify(usuarioRepository, times(1)).buscaUsuarioPorEmail(usuario.getEmail());
         verify(usuarioRepository, never()).salva(usuario);
         assertEquals(StatusUsuario.PAUSA_CURTA, usuario.getStatus());
+    }
+    @Test
+    void deveMudarStatusParaPausaLonga(){
+        Usuario usuario = DataHelper.createUsuarioFoco();
+        when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
+        when(usuarioRepository.buscaUsuarioPorId(any())).thenReturn(usuario);
+        usuarioApplicationService.mudaStatusParaPausaLonga(usuario.getEmail(), usuario.getIdUsuario());
+
+        verify(usuarioRepository, times(1)).salva(usuario);
+        assertEquals(StatusUsuario.PAUSA_LONGA, usuario.getStatus());
+    }
+
+    @Test
+    void mudarStatusParaPausaLonga_DeveLancarExcecaoUsuarioJaEstaEmPausaLonga(){
+        Usuario usuario = DataHelper.createUsuario();
+        UUID idUsuario = usuario.getIdUsuario();
+        when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
+        when(usuarioRepository.buscaUsuarioPorId(any())).thenReturn(usuario);
+
+        APIException exception = assertThrows(APIException.class,
+                () -> usuarioApplicationService.mudaStatusParaPausaLonga("usuario@teste.com", idUsuario));
+
+        assertEquals("Usuário já está em PAUSA LONGA", exception.getMessage());
+        assertEquals(HttpStatus.CONFLICT, exception.getStatusException());
+        verify(usuarioRepository, times(1)).buscaUsuarioPorEmail("usuario@teste.com");
     }
 }

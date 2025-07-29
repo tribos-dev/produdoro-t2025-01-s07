@@ -12,4 +12,5 @@ public interface UsuarioService {
     void mudaStatusParaFoco(String usuarioEmail, UUID idUsuario);
 
     void mudaStatusParaPausaCurta(String usuarioEmail, UUID idUsuario);
+    void mudaStatusParaPausaLonga(String email, UUID idUsuario);
 }

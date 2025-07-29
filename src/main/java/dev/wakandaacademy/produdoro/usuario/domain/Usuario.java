@@ -59,11 +59,32 @@ public class Usuario {
         validaUsuario(idUsuario);
         verificaStatusPausaCurta(StatusUsuario.PAUSA_CURTA);
         this.status = StatusUsuario.PAUSA_CURTA;
+//        incrementaQuantidadePomodoro();
     }
+
+//    private void incrementaQuantidadePomodoro() {
+//        this.quantidadePomodorosPausaCurta++;
+//    }
 
     private void verificaStatusPausaCurta(StatusUsuario pausaCurta) {
         if (this.status.equals(StatusUsuario.PAUSA_CURTA)) {
             throw APIException.build(HttpStatus.CONFLICT, "Usuário já está em PAUSA CURTA");
         }
+    }
+
+    public void verificaStatusPausaCurtaPausaLonga() {
+        if (this.status.equals(StatusUsuario.PAUSA_LONGA)) {
+            throw APIException.build(HttpStatus.CONFLICT, "Usuário já está em PAUSA LONGA");
+        }
+    }
+
+    public void mudaStatusParaPausaLonga(UUID idUsuario) {
+        validaUsuario(idUsuario);
+        verificaStatusPausaCurtaPausaLonga();
+        mudaStatusPausaLonga();
+    }
+
+    private void mudaStatusPausaLonga() {
+        this.status = StatusUsuario.PAUSA_LONGA;
     }
 }

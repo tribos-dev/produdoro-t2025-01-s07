@@ -21,13 +21,12 @@ public class DataHelper {
     public static Usuario createUsuario() {
         return Usuario.builder().email("email@email.com").status(StatusUsuario.PAUSA_LONGA).idUsuario(usuario1).build();
     }
+    public static Usuario createUsuarioFoco() {
+        return Usuario.builder().email("email@email.com").status(StatusUsuario.FOCO).idUsuario(usuario1).build();
+    }
 
     public static Usuario createUsuarioDiferente() {
         return Usuario.builder().email("email002@email.com").status(StatusUsuario.PAUSA_LONGA).idUsuario(usuario2).build();
-    }
-
-    public static Usuario createUsuarioFoco() {
-        return Usuario.builder().email("email@email.com").status(StatusUsuario.FOCO).idUsuario(usuario1).build();
     }
 
     public static Tarefa createTarefa() {

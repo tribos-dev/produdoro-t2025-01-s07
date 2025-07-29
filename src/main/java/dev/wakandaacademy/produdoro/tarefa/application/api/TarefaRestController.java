@@ -59,7 +59,16 @@ public class TarefaRestController implements TarefaAPI {
         log.info("[finaliza] TarefaRestController - deletaTodasTarefas");
     }
 
-    private String getUsuarioByToken(String token) {
+	@Override
+	public void incrementaPomodoro(String token, UUID idTarefa) {
+		log.info("[inicia]  TarefaRestController - incrementaPomodoro");
+		String usuarioEmail = getUsuarioByToken(token);
+		tarefaService.incrementaPomodoro(usuarioEmail, idTarefa);
+		log.info("[finaliza]  TarefaRestController - incrementaPomodoro");
+
+	}
+
+	private String getUsuarioByToken(String token) {
         log.debug("[token] {}", token);
         String usuario = tokenService.getUsuarioByBearerToken(token).orElseThrow(() -> APIException.build(HttpStatus.UNAUTHORIZED, token));
         log.info("[usuario] {}", usuario);

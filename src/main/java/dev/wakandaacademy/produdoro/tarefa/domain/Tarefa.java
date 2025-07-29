@@ -2,6 +2,7 @@ package dev.wakandaacademy.produdoro.tarefa.domain;
 
 import dev.wakandaacademy.produdoro.handler.APIException;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
+import dev.wakandaacademy.produdoro.usuario.domain.StatusUsuario;
 import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -68,13 +69,40 @@ public class Tarefa {
         }
     }
 
-    public void validaSeDescricaoNaoEstaVazia(String descricao) {
-        if (descricao == null || descricao.isEmpty()) {
-            throw APIException.build(HttpStatus.BAD_REQUEST, "O campo descrição não pode estar vazio");
-        }
-    }
-
-    public void alteraPosicao(int novaPosicaoValue) {
+   public void alteraPosicao(int novaPosicaoValue) {
         this.posicaoTarefa = novaPosicaoValue;
     }
+
+	public void validaSeDescricaoNaoEstaVazia(String descricao){
+		if (descricao == null || descricao.isEmpty()) {
+			throw APIException.build(HttpStatus.BAD_REQUEST, "O campo descrição não pode estar vazio");
+		}
+	}
+
+    public void incrementaPomodoro(Usuario usuario) {
+		pertenceAoUsuario(usuario);
+		verificaSeUsuarioEstaEmFoco(usuario);
+		ativaTarefa();
+		this.contagemPomodoro++;
+		verificaQuantidadePomodoro(usuario);
+    }
+
+	private void verificaQuantidadePomodoro(Usuario usuario) {
+		int totalPomodoro = this.contagemPomodoro;
+		if (totalPomodoro %4 == 0) {
+			usuario.mudaStatusParaPausaLonga(usuario.getIdUsuario());
+		}else {
+			usuario.mudaStatusParaPausaCurta(usuario.getIdUsuario());
+		}
+	}
+
+	private void ativaTarefa() {
+		this.statusAtivacao = StatusAtivacaoTarefa.ATIVA;
+	}
+
+	private void verificaSeUsuarioEstaEmFoco(Usuario usuario) {
+		if (!usuario.getStatus().equals(StatusUsuario.FOCO)){
+			throw APIException.build(HttpStatus.CONFLICT, "O Usuário não está em foco!");
+		}
+	}
 }
